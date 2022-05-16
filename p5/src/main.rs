@@ -3,13 +3,13 @@ use std::io;
 impl Solution {
     pub fn longest_palindrome(s: String) -> String {
         let s = s.as_bytes();
-        let ret_odd = Solution::longest_palindrome_internal(&s, true, 1);
+        let ret_odd = Solution::longest_palindrome_internal(s, true, 1);
         let mut l = (ret_odd.len() / 2) as i32;
         if l == 0 {
             l = 1;
         }
 
-        let ret_not_odd = Solution::longest_palindrome_internal(&s, false, l);
+        let ret_not_odd = Solution::longest_palindrome_internal(s, false, l);
         String::from_utf8(if ret_not_odd.len() > ret_odd.len() {
             ret_not_odd
         } else {
