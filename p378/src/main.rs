@@ -8,9 +8,8 @@ impl Solution {
         let column_l = matrix[0].len();
         let mut l = matrix[0][0];
         let mut r = matrix[row_l - 1][column_l - 1] + 1;
-        let mut t = 0;
         loop {
-            let mid = if (l + r) % 2 == 0 { (l + r) / 2} else { (l + r - 1) /2};
+            let mid = if (l + r) % 2 == 0 { (l + r) / 2 } else { (l + r - 1) / 2 };
             let (n, n_ret, n_ret_num) = Solution::get_idx(&matrix, mid);
             // println!("l:{}, r:{}, mid:{}, n:{}, n_ret:{}, n_ret_num:{}", l, r, mid, n, n_ret, n_ret_num);
             if k > n - n_ret_num && k <= n {
@@ -22,10 +21,6 @@ impl Solution {
             } else {
                 r = mid;
                 assert_ne!(l, r);
-            }
-            t += 1;
-            if t == 30 {
-                return 114514;
             }
         }
     }
