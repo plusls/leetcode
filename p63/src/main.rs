@@ -8,7 +8,7 @@ impl Solution {
         if m == 1 && n == 1 && obstacle_grid[0][0] == 1 {
             return 0;
         }
-        let mut results = vec![vec![0;n];m];
+        let mut results = vec![vec![0; n]; m];
         results[0][0] = 1;
         for i in 0..m {
             for j in 0..n {
@@ -20,7 +20,7 @@ impl Solution {
                 if i != 0 {
                     u = obstacle_grid[i - 1][j];
                 }
-                if j != 0  {
+                if j != 0 {
                     l = obstacle_grid[i][j - 1];
                 }
                 if u != 1 {
