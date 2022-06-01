@@ -4,22 +4,30 @@ impl Solution {
     pub fn max_envelopes(envelopes: Vec<Vec<i32>>) -> i32 {
         use std::cmp;
         let mut envelopes = envelopes;
-        envelopes.sort_unstable();
+        envelopes.sort_unstable_by(|envelope0, envelope1| {
+            let envelope0_0 = envelope0[0];
+            let envelope0_1 = envelope0[1];
+            let envelope1_0 = envelope1[0];
+            let envelope1_1 = envelope1[1];
+            match envelope0_0.cmp(&envelope1_0) {
+                cmp::Ordering::Equal => {
+                    envelope1_1.cmp(&envelope0_1)
+                }
+                ordering => {
+                    ordering
+                }
+            }
+        });
         // println!("envelopes: {:?}", envelopes);
         let mut d = vec![0; envelopes.len()];
         let mut ret = 0;
         d[ret] = envelopes[0][1];
-        let mut prev_w = 0;
         for t in envelopes {
-            if t[0] == prev_w {
-                continue;
-            }
             let n = t[1];
             match n.cmp(&d[ret]) {
                 cmp::Ordering::Greater => {
                     ret += 1;
                     d[ret] = n;
-                    prev_w = t[0];
                 }
                 cmp::Ordering::Less => {
                     let mut l = 0;
@@ -39,9 +47,6 @@ impl Solution {
                         }
 
                         if l == r {
-                            if l == ret {
-                                prev_w = t[0];
-                            }
                             d[l] = n;
                             break;
                         }
