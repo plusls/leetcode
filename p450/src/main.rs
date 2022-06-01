@@ -21,62 +21,67 @@ impl TreeNode {
 
 impl Solution {
     pub fn delete_node(root: Option<Rc<RefCell<TreeNode>>>, key: i32) -> Option<Rc<RefCell<TreeNode>>> {
-        use std::mem;
-        if root.is_none() {
-            return root;
-        }
-        let root = root.unwrap();
-        let mut root = root.borrow_mut();
-        let new_root = Rc::new(RefCell::new(TreeNode::new(root.val)));
-        {
-            let mut new_root = new_root.borrow_mut();
-            new_root.left = mem::replace(&mut root.left, None);
-            new_root.right = mem::replace(&mut root.right, None);
-        }
-        let mut new_root = Some(new_root);
-        Self::my_delete_node(&mut new_root, key);
-        new_root
-    }
-
-    pub fn my_delete_node(root: &mut Option<Rc<RefCell<TreeNode>>>, key: i32) {
         use std::{cmp, mem};
-        if root.is_none() {
-            return;
-        }
-        let root_node = root.as_ref().unwrap();
-        let mut root_node = root_node.borrow_mut();
-        match root_node.val.cmp(&key) {
-            cmp::Ordering::Less => {
-                Self::my_delete_node(&mut root_node.right, key);
-            }
-            cmp::Ordering::Greater => {
-                Self::my_delete_node(&mut root_node.left, key);
-            }
-            cmp::Ordering::Equal => {
-                let right = mem::replace(&mut root_node.right, None);
-                if root_node.left.is_none() {
-                    drop(root_node);
-                    *root = right;
-                } else {
-                    let left = mem::replace(&mut root_node.left, None);
-                    drop(root_node);
-                    *root = left;
-                    let mut current_node = Some(root.as_ref().unwrap().clone());
-                    loop {
-                        let current_right = Self::get_right(&current_node);
-                        if current_right.is_none() {
-                            break;
+        let new_root = Some(Rc::new(RefCell::new(TreeNode::new(i32::MAX))));
+        new_root.as_ref().unwrap().borrow_mut().left = root;
+        let mut current_root = new_root.as_ref().unwrap().borrow().left.clone();
+        let mut prev_root = new_root.clone();
+        let mut choose_left = true;
+        // 寻找目标节点
+        while current_root.is_some() {
+            let current_root_node = current_root.as_ref().unwrap();
+            let mut current_root_node = current_root_node.borrow_mut();
+            match current_root_node.val.cmp(&key) {
+                cmp::Ordering::Less => {
+                    let tmp = current_root_node.right.clone();
+                    drop(current_root_node);
+                    prev_root = current_root;
+                    current_root = tmp;
+                    choose_left = false;
+                }
+                cmp::Ordering::Greater => {
+                    let tmp = current_root_node.left.clone();
+                    drop(current_root_node);
+                    prev_root = current_root;
+                    current_root = tmp;
+                    choose_left = true;
+                }
+                cmp::Ordering::Equal => {
+                    // 已经找到目标节点
+                    let right = mem::replace(&mut current_root_node.right, None);
+                    if current_root_node.left.is_none() {
+                        // 如果目标节点左儿子是空，则直接用右儿子替换目标节点
+                        Self::update_child(&prev_root, right, choose_left);
+                    } else {
+                        let left = mem::replace(&mut current_root_node.left, None);
+                        drop(current_root_node);
+                        // 用左儿子替换目标节点
+                        Self::update_child(&prev_root, left.clone(), choose_left);
+                        current_root = left;
+                        // 寻找到左边儿子的最右的叶子节点，并将右儿子插在右边
+                        loop {
+                            // println!("current_root: {}", current_root.as_ref().unwrap().borrow().val);
+                            let current_right = current_root.as_ref().unwrap().borrow().right.clone();
+                            if current_right.is_none() {
+                                break;
+                            }
+                            current_root = current_right;
                         }
-                        current_node = current_right;
+                        current_root.as_ref().unwrap().borrow_mut().right = right;
                     }
-                    current_node.as_ref().unwrap().borrow_mut().right = right;
+                    break;
                 }
             }
         }
+        new_root.unwrap().borrow().left.clone()
     }
 
-    pub fn get_right(root: &Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
-        root.as_ref().unwrap().borrow().right.clone()
+    pub fn update_child(root: &Option<Rc<RefCell<TreeNode>>>, child: Option<Rc<RefCell<TreeNode>>>, choose_left: bool) {
+        if choose_left {
+            root.as_ref().unwrap().borrow_mut().left = child;
+        } else {
+            root.as_ref().unwrap().borrow_mut().right = child;
+        }
     }
 }
 
