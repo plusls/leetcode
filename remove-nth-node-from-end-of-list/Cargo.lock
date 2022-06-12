@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "p19"
+name = "remove-nth-node-from-end-of-list"
 version = "0.1.0"

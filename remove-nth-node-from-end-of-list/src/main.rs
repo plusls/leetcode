@@ -1,4 +1,3 @@
-use std::io;
 
 // 链表学习
 // 折磨
@@ -78,6 +77,7 @@ fn from_list_node(head: Option<Box<ListNode>>) -> Vec<i32> {
 }
 
 fn main() {
+    use std::io;
     loop {
         let mut input = String::new();
         if io::stdin().read_line(&mut input).unwrap() == 0 {
