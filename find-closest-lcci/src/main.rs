@@ -1,8 +1,6 @@
-use std::io;
-
 impl Solution {
     pub fn find_closest(words: Vec<String>, word1: String, word2: String) -> i32 {
-        println!("{:?} {:?} {:?}", words, word1, word2);
+        // println!("{:?} {:?} {:?}", words, word1, word2);
         let mut p1 = -1;
         let mut p2 = -1;
         let mut ret = -1;
@@ -42,6 +40,7 @@ struct Solution;
 
 
 fn main() {
+    use std::io;
     loop {
         let mut input = String::new();
         if io::stdin().read_line(&mut input).unwrap() == 0 {

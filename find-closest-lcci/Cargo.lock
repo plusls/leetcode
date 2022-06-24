@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "interview-17-11"
+name = "find-closest-lcci"
 version = "0.1.0"
